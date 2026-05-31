@@ -62,7 +62,21 @@ function SessionViewer() {
       setScenarioImages({});
       setFeatureComment('');
       setCommentExpanded(false);
+      setAttachmentTarget(null);
+      setFeatureNameEditing(false);
+      setFeatureNameValue('');
+      setAttachmentTarget(null);
+      setFeatureNameEditing(false);
+      setFeatureNameValue('');
+      const loaded = await db.features
+        .where('sessionId')
+        .equals(Number(sessionId))
+        .toArray();
+      setFeatures(loaded);
+    };
 
+    fetchData();
+  }, [sessionId]);
       const loaded = await db.features
         .where('sessionId')
         .equals(Number(sessionId))
@@ -372,9 +386,16 @@ function SessionViewer() {
   };
 
   const handleSaveFeatureName = async () => {
-    if (!selectedFeature || !featureNameValue.trim()) return;
+    if (!selectedFeature) return;
 
-    const newTitle = featureNameValue.trim();
+    const trimmed = featureNameValue.trim();
+    if (!trimmed) {
+      setFeatureNameValue(selectedFeature.title || '');
+      setFeatureNameEditing(false);
+      return;
+    }
+
+    const newTitle = trimmed;
     // Short-circuit if title hasn't changed
     if (newTitle === selectedFeature.title) {
       setFeatureNameEditing(false);
@@ -386,7 +407,7 @@ function SessionViewer() {
     try {
       // Try JSON first (Cucumber report)
       const jsonContent = JSON.parse(selectedFeature.content);
-      jsonContent.name = newTitle;
+      jsonContent.title = newTitle;
       newContent = JSON.stringify(jsonContent, null, 2);
     } catch {
       // Otherwise, replace Feature: line in .feature text
