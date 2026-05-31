@@ -65,23 +65,13 @@ function SessionViewer() {
       setAttachmentTarget(null);
       setFeatureNameEditing(false);
       setFeatureNameValue('');
-      setAttachmentTarget(null);
-      setFeatureNameEditing(false);
-      setFeatureNameValue('');
+      
       const loaded = await db.features
         .where('sessionId')
         .equals(Number(sessionId))
         .toArray();
       setFeatures(loaded);
-    };
-
-    fetchData();
-  }, [sessionId]);
-      const loaded = await db.features
-        .where('sessionId')
-        .equals(Number(sessionId))
-        .toArray();
-      setFeatures(loaded);
+      
     };
 
     fetchData();
