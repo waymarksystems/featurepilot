@@ -575,11 +575,17 @@ function SessionViewer() {
             uploadedAt: new Date().toISOString()
           });
         };
+        reader.onerror = () => resolve(null);
         reader.readAsDataURL(file);
       })
     );
 
-    const fileData = await Promise.all(fileReads);
+    const fileData = (await Promise.all(fileReads)).filter(Boolean);
+    if (fileData.length === 0) {
+      setAttachmentTarget(null);
+      e.target.value = '';
+      return;
+    }
     await db.attachments.bulkAdd(fileData);
 
     const images = await db.attachments
