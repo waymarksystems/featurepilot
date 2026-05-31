@@ -28,9 +28,9 @@ const LoginPage = () => {
           <Col xs={12} sm={10} md={8} lg={6}>
             <Card className="shadow-lg p-4 mt-5">
               <Card.Body className="text-center">
-                <Card.Title className="mb-4 fs-3">Welcome to StepRunner</Card.Title>
+                <Card.Title className="mb-4 fs-3">Welcome to FeaturePilot</Card.Title>
                 <p className="mb-4">
-                  StepRunner bridges the gap between automated and manual testing. 
+                  FeaturePilot bridges the gap between automated and manual testing. 
                   Import feature files or reports, execute tests step-by-step, 
                   attach screenshots, and export full test results.
                 </p>

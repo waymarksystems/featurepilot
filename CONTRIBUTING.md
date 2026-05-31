@@ -1,6 +1,6 @@
-# Contributing to StepRunner
+# Contributing to FeaturePilot
 
-We love contributions! Whether you're fixing bugs, adding features, improving documentation, or providing feedback, your help makes StepRunner better for everyone.
+We love contributions! Whether you're fixing bugs, adding features, improving documentation, or providing feedback, your help makes FeaturePilot better for everyone.
 
 ## 🚀 Quick Start for Contributors
 
@@ -15,7 +15,7 @@ We love contributions! Whether you're fixing bugs, adding features, improving do
 ## 🐛 Reporting Bugs
 
 Before submitting a bug report:
-- Check if the issue already exists in [GitHub Issues](https://github.com/steveswinsburg/steprunner/issues)
+- Check if the issue already exists in [GitHub Issues](https://github.com/waymarksystems/featurepilot/issues)
 - Try reproducing the issue with the latest version
 - Collect relevant details (browser, OS, steps to reproduce)
 
@@ -61,4 +61,4 @@ When contributing documentation:
 - Update relevant sections consistently
 - Consider adding screenshots for UI changes
 
-Thank you for contributing to StepRunner! 🎉
+Thank you for contributing to FeaturePilot! 🎉

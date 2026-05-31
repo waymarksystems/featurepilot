@@ -1,19 +1,19 @@
-# 🏃‍♂️ StepRunner
+# ✈️ FeaturePilot
 
-[![Build](https://github.com/steveswinsburg/steprunner/actions/workflows/node.js.yml/badge.svg)](https://github.com/steveswinsburg/steprunner/actions/workflows/node.js.yml)
-[![Deploy](https://github.com/steveswinsburg/steprunner/actions/workflows/firebase-hosting-merge.yml/badge.svg)](https://github.com/steveswinsburg/steprunner/actions/workflows/firebase-hosting-merge.yml)
+[![Build](https://github.com/waymarksystems/featurepilot/actions/workflows/node.js.yml/badge.svg)](https://github.com/waymarksystems/featurepilot/actions/workflows/node.js.yml)
+[![Deploy](https://github.com/waymarksystems/featurepilot/actions/workflows/firebase-hosting-merge.yml/badge.svg)](https://github.com/waymarksystems/featurepilot/actions/workflows/firebase-hosting-merge.yml)
 [![License](https://img.shields.io/badge/License-BUSL--1.1-orange.svg)](LICENSE)
 
-**StepRunner bridges the gap between automated and manual testing by seamlessly blending both approaches.** 
+**FeaturePilot bridges the gap between automated and manual testing by seamlessly blending both approaches.** 
 
-Perfect for QA engineers, testers, and developers who need to execute BDD scenarios step-by-step, import existing Cucumber automation results, attach visual evidence, and generate unified reports that combine automated test outcomes with manual verification.
+Perfect for QA engineers, testers, and developers who need to execute BDD scenarios step-by-step, import existing Cucumber automation results, attach visual evidence, and generate unified reports that combine automated test results with manual verification and enhancement.
 
 ## ✨ Key Features
 
 - 📂 **File Upload**: Support for `.feature` files and Cucumber JSON reports
 - 🧾 **Smart Display**: Beautiful rendering of features, scenarios, steps, backgrounds, and examples
 - ✅ **Interactive Execution**: Mark steps as passed/failed/skipped/undefined individually or in bulk
-- 📸 **Visual Evidence**: Drag-and-drop image attachments for any step
+- 📸 **Attach Evidence**: Drag-and-drop screenshots or log files for any step
 - 📊 **Rich Reporting**: Export results as Cucumber JSON and browsable HTML reports
 - 🔄 **Hybrid Workflows**: Import automated results and continue with manual steps
 - 🔒 **Privacy-First**: No data leaves your browser unless you choose to export
@@ -22,9 +22,9 @@ Perfect for QA engineers, testers, and developers who need to execute BDD scenar
 
 ## 📸 Screenshots & Demo
 
-<img src="screenshot.png" width="600px" alt="StepRunner interface showing Cucumber feature file execution" />
+<img src="screenshot.png" width="600px" alt="FeaturePilot interface showing Cucumber feature file execution" />
 
-*StepRunner interface showing step-by-step execution of a Cucumber feature file with visual feedback*
+*FeaturePilot interface showing step-by-step execution of a Cucumber feature file with visual feedback*
 
 🌐 **Live Demo:** https://steprunner-abc1f.web.app/
 
@@ -48,8 +48,8 @@ Perfect for QA engineers, testers, and developers who need to execute BDD scenar
 
 ```bash
 # Clone the repository
-git clone https://github.com/steveswinsburg/steprunner.git
-cd steprunner
+git clone https://github.com/waymarksystems/featurepilot.git
+cd featurepilot
 
 # Install dependencies
 npm install
@@ -66,8 +66,28 @@ See [CONTRIBUTING.md](CONTRIBUTING.md)
 
 ## 📄 License
 
-This project is licensed under the Business Source License 1.1 (BUSL-1.1). Production use requires a commercial license from the Licensor. See [LICENSE](LICENSE) for details.
+This project is licensed under the **Business Source License 1.1 (BUSL-1.1)**.
 
-For commercial licensing, please contact: steve.swinsburg@gmail.com
+### 🆓 Free for Personal & Non-Commercial Use
+- ✅ **Personal projects** - Non-commercial use only
+- ✅ **Academic research** - Educational and research projects
+- ✅ **Evaluation** - Testing before purchasing
+- ✅ **Learning** - Personal skill development
+- ✅ **Contributing** - Fork and submit pull requests
+
+### 💼 Commercial License Required
+A commercial license is required for:
+- 🏢 **Any use within commercial organizations** - Even dev/test environments
+- 🏛️ **Any government use** - Federal, state, or local
+- 🌐 **Offering as a hosted service** - SaaS or API offerings
+- 📦 **Embedding in commercial products** - White-label or OEM use
+
+**Important:** If you work for a company or government entity and use FeaturePilot for work purposes (in any environment), you need a commercial license.
+
+**Commercial licensing:** See [COMMERCIAL.md](COMMERCIAL.md) or contact info@waymarksystems.au
+
+See [LICENSE](LICENSE) for full details.
 
 **Made with ❤️ for the testing community**
+ 
+**Copyright © 2025-2026 Waymark Systems Pty Ltd**

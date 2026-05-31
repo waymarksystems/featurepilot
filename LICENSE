@@ -3,9 +3,10 @@ Business Source License 1.1
 Parameters
 
 License: Business Source License 1.1 (BUSL-1.1)
-Licensor: Steve Swinsburg
-Licensed Work: StepRunner (this repository)
-The Licensed Work is (c) 2025 Steve Swinsburg
+Licensor: Waymark Systems Pty Ltd
+Licensed Work: FeaturePilot (this repository)
+The Licensed Work is (c) 2025-2026 Waymark Systems Pty Ltd
+Created by: Steve Swinsburg
 Change Date: 2075-01-01
 Change License: MIT License
 
@@ -14,25 +15,37 @@ Business Source License 1.1
 
 Terms
 
-The Licensor grants you a non-exclusive right to use, copy, modify, create
-derivative works, redistribute, and non-commercially use the Licensed Work,
-subject to the following conditions:
+The Licensor grants you a non-exclusive right to use, copy, and modify the
+Licensed Work for personal non-commercial purposes only, subject to the
+following conditions:
 
-1. Production Use
-You may not use the Licensed Work for production purposes, or for providing
-the Licensed Work as a service, without purchasing a commercial license from
-the Licensor. "Production" means use in a live environment for internal or
-external users, or any use that generates revenue or is mission-critical.
+1. Commercial and Government Use Prohibition
+You may not use the Licensed Work for any commercial purpose or within any
+commercial, for-profit, or government organization without purchasing a
+commercial license from the Licensor. "Commercial Purpose" includes but is
+not limited to: (a) use by employees, contractors, or agents of a for-profit
+company or government entity in the course of their work, (b) use in any
+environment (production, staging, testing, development) owned or operated by
+a commercial or government organization, (c) any use that directly or
+indirectly supports revenue-generating activities or government operations.
 
-2. Non-Production Use
-You may use the Licensed Work for development, testing, evaluation, or
-non-commercial academic research, provided such use is not Production Use.
+2. Permitted Non-Commercial Use
+You may use the Licensed Work for personal projects, non-commercial academic
+research, evaluation for potential commercial purchase, or open source
+contributions to the official repository, provided such use is entirely
+separate from any commercial or government organization's operations.
 
-3. Redistribution
-You may redistribute the Licensed Work, provided that (a) you do not remove
-or alter this license or its parameters, (b) you do not misrepresent the
-Licensed Work as being under an open source license, and (c) you comply with
-the restrictions in Section 1.
+3. Forking and Contributions
+You may fork the Licensed Work on public platforms (e.g., GitHub, GitLab)
+solely for the purpose of contributing improvements back to the official
+repository via pull requests, or for personal learning and experimentation.
+Forked versions remain subject to all restrictions in this license, including
+the prohibition on commercial and government use. You may not use, deploy,
+host as a service, or redistribute any forked or modified version. For actual
+use, users must obtain the Licensed Work from the official repository at
+github.com/steveswinsburg/featurepilot. You may not redistribute compiled
+versions, mirror the source code on other platforms for distribution purposes,
+or remove this license from any fork or derivative work.
 
 4. Trademarks
 This license does not grant any rights to use the Licensor’s trademarks,
@@ -55,4 +68,4 @@ available under the Change License specified above.
 If you violate the terms of this license, your rights under this license
 terminate automatically.
 
-For commercial licenses, please contact the Licensor.
+For commercial licenses, please contact: info@waymarksystems.au

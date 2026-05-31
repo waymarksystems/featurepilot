@@ -1,5 +1,5 @@
 {
-  "name": "steprunner",
+  "name": "featurepilot",
   "version": "0.1.0",
   "description": "A powerful React web application for viewing, running, and managing Cucumber/Gherkin feature files manually. Perfect for BDD testing, exploratory testing, and manual test execution with visual evidence and comprehensive reporting.",
   "keywords": [
@@ -27,15 +27,16 @@
   "homepage": "https://steprunner-abc1f.web.app/",
   "repository": {
     "type": "git",
-    "url": "https://github.com/steveswinsburg/steprunner.git"
+    "url": "https://github.com/waymarksystems/featurepilot.git"
   },
   "bugs": {
-    "url": "https://github.com/steveswinsburg/steprunner/issues"
+    "url": "https://github.com/waymarksystems/featurepilot/issues"
   },
   "author": {
     "name": "Steve Swinsburg",
     "url": "https://github.com/steveswinsburg"
   },
+  "copyright": "Copyright © 2025-2026 Waymark Systems Pty Ltd",
   "license": "BUSL-1.1",
   "private": true,
   "engines": {

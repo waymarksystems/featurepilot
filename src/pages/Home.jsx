@@ -42,7 +42,7 @@ function Home() {
 
   return (
     <div>
-      <h1>Welcome to StepRunner</h1>
+      <h1>Welcome to FeaturePilot</h1>
 
       {sessions.length === 0 ? (
         <Card className="mt-4">
