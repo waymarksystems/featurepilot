@@ -1,6 +1,6 @@
 import Dexie from 'dexie';
 
-const db = new Dexie('StepRunnerDB');
+const db = new Dexie('FeaturePilotDB');
 
 db.version(1).stores({
   sessions: '++id, name, createdAt',

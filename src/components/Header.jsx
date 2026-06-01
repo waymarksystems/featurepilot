@@ -23,7 +23,7 @@ function Header({ user, onLogout }) {
   return (
     <Navbar bg="dark" variant="dark" expand="lg">
       <Container fluid>
-        <Navbar.Brand as={Link} to="/">StepRunner 🏃‍♂️</Navbar.Brand>
+        <Navbar.Brand as={Link} to="/">FeaturePilot ✈️</Navbar.Brand>
         <Nav style={{ position: 'relative' }}>
           {user && (
             <Dropdown align="start">

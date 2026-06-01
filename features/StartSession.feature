@@ -7,7 +7,7 @@ Feature: Starting and managing test sessions
     Given the user is authenticated
 
   Scenario: User starts a new session from the home screen
-    Given StepRunner is open
+    Given FeaturePilot is open
     And no previous sessions exist
     When the user clicks "Start a Test Session"
     Then a new session should be created with a unique ID
@@ -15,7 +15,7 @@ Feature: Starting and managing test sessions
     And the session should be stored in IndexedDB
 
   Scenario: User starts a session with existing sessions
-    Given StepRunner is open
+    Given FeaturePilot is open
     And previous sessions exist
     When the user clicks "Start New Session"
     Then a new session should be created
