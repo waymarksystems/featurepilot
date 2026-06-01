@@ -1,6 +1,6 @@
 {
-    "name": "",
-    "short_name": "",
+    "name": "FeaturePilot - BDD Test Runner",
+    "short_name": "FeaturePilot",
     "icons": [
         {
             "src": "/android-chrome-192x192.png",
