@@ -31,8 +31,16 @@ function FeatureSidebar({ features, selectedId, onSelect, onDelete }) {
         .feature-item-delete:hover {
           color: #bd2130;
         }
+        .feature-title {
+          display: -webkit-box;
+          -webkit-line-clamp: 2;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+          word-break: break-word;
+          line-height: 1.4;
+        }
       `}</style>
-      <div className="flex-shrink-0 overflow-hidden" style={{ width: '300px' }}>
+      <div className="flex-shrink-0 overflow-hidden">
         <div className="mb-5">
           <h5 className="p-3">Features</h5>
           <ListGroup variant="flush">
@@ -46,14 +54,14 @@ function FeatureSidebar({ features, selectedId, onSelect, onDelete }) {
                   key={f.id}
                   active={f.id === selectedId}
                   action
-                  className={`text-truncate feature-item d-flex justify-content-between align-items-center ${f.id === selectedId ? 'active' : ''}`}
+                  className={`feature-item d-flex justify-content-between align-items-start pe-2 ${f.id === selectedId ? 'active' : ''}`}
                 >
-                  <span onClick={() => onSelect(f)} style={{ flexGrow: 1, cursor: 'pointer', maxWidth: '260px' }}>
+                  <span onClick={() => onSelect(f)} className="feature-title" style={{ flexGrow: 1, cursor: 'pointer', maxWidth: '250px' }}>
                     {f.title}
                   </span>
                   {onDelete && (
                     <button
-                      className="btn btn-link btn-sm p-0 ms-2 feature-item-delete"
+                      className="btn btn-link btn-sm p-0 ms-1 feature-item-delete"
                       style={{ fontSize: '1rem', lineHeight: 1, minWidth: '20px', border: 'none', background: 'none' }}
                       onClick={(e) => {
                         e.stopPropagation();
