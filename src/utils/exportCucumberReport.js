@@ -171,20 +171,24 @@ function mapStatusToCucumber(status) {
  * Download the Cucumber report as a ZIP file containing JSON, HTML, and audit log
  * All attachments are embedded in the JSON (in the embeddings array)
  */
-export async function downloadCucumberReport(sessionId) {
+export async function downloadCucumberReport(sessionId, user = null) {
   const report = await exportCucumberReport(sessionId);
   const json = JSON.stringify(report, null, 2);
   
+  // Get session name
+  const session = await db.sessions.get(sessionId);
+  const sessionName = session?.name || 'Unknown Session';
+  
   // Generate HTML report
-  const html = await generateCucumberHtml(report);
+  const html = await generateCucumberHtml(report, user, sessionName);
   
   // Export audit log as text
   const auditLog = await exportAuditLog(sessionId);
   
   // Create ZIP file
   const zip = new JSZip();
-  zip.file(`cucumber-report-${sessionId}.json`, json);
-  zip.file(`cucumber-report-${sessionId}.html`, html);
+  zip.file(`featurepilot-report-${sessionId}.json`, json);
+  zip.file(`featurepilot-report-${sessionId}.html`, html);
   zip.file(`audit-log-${sessionId}.txt`, auditLog);
   
   // Generate ZIP blob
@@ -194,7 +198,7 @@ export async function downloadCucumberReport(sessionId) {
   const zipUrl = URL.createObjectURL(zipBlob);
   const link = document.createElement('a');
   link.href = zipUrl;
-  link.download = `cucumber-report-${sessionId}.zip`;
+  link.download = `featurepilot-report-${sessionId}.zip`;
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);

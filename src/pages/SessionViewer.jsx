@@ -343,7 +343,8 @@ function SessionViewer() {
 
   const handleExportReport = async () => {
     try {
-      await downloadCucumberReport(Number(sessionId));
+      const user = auth.currentUser;
+      await downloadCucumberReport(Number(sessionId), user);
       await logActivity('Exported report as Cucumber report');
     } catch (error) {
       console.error('Export failed:', error);
