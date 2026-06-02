@@ -22,7 +22,14 @@ function Header({ user, onLogout }) {
   return (
     <Navbar bg="dark" variant="dark" expand="lg">
       <Container fluid>
-        <Navbar.Brand as={Link} to="/">FeaturePilot ✈️</Navbar.Brand>
+        <Navbar.Brand as={Link} to="/" className="d-flex align-items-center gap-2">
+          FeaturePilot
+          <Image 
+            src="/logo/featurepilot-plane-transparent-inverted.png" 
+            alt="plane" 
+            style={{ height: '24px' }}
+          />
+        </Navbar.Brand>
         <Nav style={{ position: 'relative' }}>
           {user && (
             <Dropdown align="start">
