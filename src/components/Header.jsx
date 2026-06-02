@@ -6,7 +6,6 @@ import db from '../db/indexedDb';
 
 function Header({ user, onLogout }) {
   const navigate = useNavigate();
-  const defaultAvatar = '/man-running.png';
 
   const sessions = useLiveQuery(async () => {
     return await db.sessions
@@ -50,14 +49,15 @@ function Header({ user, onLogout }) {
         <Nav className="ms-auto">
           {user && (
             <Nav.Item className="d-flex align-items-center gap-2">
-              <Image
-                src={user.photoURL || defaultAvatar}
-                roundedCircle
-                width="30"
-                height="30"
-                alt="profile"
-                onError={(e) => { e.target.src = defaultAvatar; }}
-              />
+              {user.photoURL && (
+                <Image
+                  src={user.photoURL}
+                  roundedCircle
+                  width="30"
+                  height="30"
+                  alt="profile"
+                />
+              )}
               <span style={{ color: '#fff' }}>{user.displayName || user.email}</span>
               <Button variant="outline-light" size="sm" onClick={onLogout}>
                 Logout

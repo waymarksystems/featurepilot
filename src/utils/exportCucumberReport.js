@@ -54,7 +54,11 @@ export async function exportCucumberReport(sessionId) {
       console.log('Scenario steps:', scenario.steps);
       
       // Build steps for this scenario
-      const scenarioSteps = scenario.steps.map((stepText, stepIndex) => {
+      const scenarioSteps = scenario.steps.map((step, stepIndex) => {
+        // Handle both old format (string) and new format (object)
+        const stepText = typeof step === 'string' ? step : step.text;
+        const docString = typeof step === 'object' ? step.docString : null;
+        
         const stepKey = steps.find(
           s => s.scenarioIndex === scenarioIndex && s.stepIndex === stepIndex
         );
@@ -68,6 +72,15 @@ export async function exportCucumberReport(sessionId) {
         const keyword = match ? `${match[1]} ` : '';
         const name = match ? match[2] : stepText;
 
+        // Build arguments array (for docStrings)
+        const args = [];
+        if (docString) {
+          args.push({
+            content: docString,
+            line: stepIndex + 1 // Placeholder line number
+          });
+        }
+
         // Get all attachments (images and document files) for this step
         const stepAttachments = images.filter(
           img => img.scenarioIndex === scenarioIndex && img.stepIndex === stepIndex
@@ -80,13 +93,23 @@ export async function exportCucumberReport(sessionId) {
           ...(attachment.fileName && { name: attachment.fileName })
         }));
 
+        // Determine match location based on step execution status
+        let matchLocation = 'unknown';
+        if (stepKey?.matchLocation) {
+          // Preserve existing match location from imported reports
+          matchLocation = stepKey.matchLocation;
+        } else if (stepKey?.status && stepKey.status !== 'undo') {
+          // Mark as 'manual' only if step has been executed (not undefined)
+          matchLocation = 'manual';
+        }
+
         return {
-          arguments: [],
+          arguments: args,
           keyword,
           line: stepIndex + 1, // Placeholder line number
           name,
           match: {
-            location: stepKey?.matchLocation || 'unknown'
+            location: matchLocation
           },
           result: {
             status: mapStatusToCucumber(stepKey?.status || 'unknown'),

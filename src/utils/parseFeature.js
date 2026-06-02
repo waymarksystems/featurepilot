@@ -52,10 +52,42 @@ export default function parseFeature(text) {
   let examplesHeader = null;
   let examplesRows = [];
   let collectingExamples = false;
+  let collectingDocString = false;
+  let docStringLines = [];
+  let pendingStep = null;
   lastTags = [];
 
   for (let i = 0; i < lines.length; i++) {
     let line = lines[i].trim();
+    
+    // Handle DocString collection
+    if (collectingDocString) {
+      if (line === '"""' || line === "'''") {
+        // End of DocString
+        collectingDocString = false;
+        if (pendingStep) {
+          pendingStep.docString = docStringLines.join('\n');
+          pendingStep = null;
+        }
+        docStringLines = [];
+        continue;
+      } else {
+        // Collect DocString lines (preserve original indentation within the docstring)
+        const originalLine = lines[i];
+        // Remove leading whitespace but preserve relative indentation
+        const trimmedOriginal = originalLine.replace(/^\s+/, '');
+        docStringLines.push(trimmedOriginal);
+        continue;
+      }
+    }
+    
+    // Check for DocString start after we've added a step
+    if (line === '"""' || line === "'''") {
+      collectingDocString = true;
+      docStringLines = [];
+      continue;
+    }
+    
     if (line.startsWith('@')) {
       lastTags = line.split(/\s+/).filter(t => t.startsWith('@'));
       continue;
@@ -115,7 +147,9 @@ export default function parseFeature(text) {
     }
     if (inScenarioOutline) {
       if (/^(Given|When|Then|And|But)/.test(line)) {
-        scenarioOutline.steps.push(line);
+        const step = { text: line };
+        scenarioOutline.steps.push(step);
+        pendingStep = step;
       } else if (line.startsWith('Examples:')) {
         collectingExamples = true;
       } else if (collectingExamples && line.startsWith('|')) {
@@ -131,10 +165,13 @@ export default function parseFeature(text) {
       continue;
     }
     if (/^(Given|When|Then|And|But)/.test(line)) {
+      const step = { text: line };
       if (inBackground) {
-        background?.steps.push(line);
+        background?.steps.push(step);
+        pendingStep = step;
       } else {
-        currentScenario?.steps.push(line);
+        currentScenario?.steps.push(step);
+        pendingStep = step;
       }
     }
   }
@@ -162,10 +199,19 @@ function expandScenarioOutline(outline, header, rows, tags) {
   for (const row of rows) {
     let scenarioTitle = outline.title;
     let steps = outline.steps.map(step => {
-      let newStep = step;
+      // step is now an object with {text, docString?}
+      let newStepText = step.text;
+      let newDocString = step.docString;
       header.forEach((h, idx) => {
-        newStep = newStep.replaceAll(`<${h.trim()}>`, row[idx]);
+        newStepText = newStepText.replaceAll(`<${h.trim()}>`, row[idx]);
+        if (newDocString) {
+          newDocString = newDocString.replaceAll(`<${h.trim()}>`, row[idx]);
+        }
       });
+      const newStep = { text: newStepText };
+      if (newDocString) {
+        newStep.docString = newDocString;
+      }
       return newStep;
     });
     scenarios.push({ title: scenarioTitle, steps, tags: tags || outline.tags || [] });
