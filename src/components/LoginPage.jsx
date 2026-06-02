@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Container, Row, Col, Card, Button, Alert } from 'react-bootstrap';
+import { Container, Row, Col, Card, Button, Alert, Image } from 'react-bootstrap';
 import { FaGithub, FaGoogle, FaMicrosoft } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import useAuth from '../hooks/useAuth';
@@ -28,9 +28,14 @@ const LoginPage = () => {
           <Col xs={12} sm={10} md={8} lg={6}>
             <Card className="shadow-lg p-4 mt-5">
               <Card.Body className="text-center">
-                <Card.Title className="mb-4 fs-3">Welcome to StepRunner</Card.Title>
+                <Image 
+                  src="/logo/featurepilot-combined.png" 
+                  alt="FeaturePilot Logo" 
+                  className="mb-4"
+                  style={{ maxWidth: '250px', width: '100%' }}
+                />
                 <p className="mb-4">
-                  StepRunner bridges the gap between automated and manual testing. 
+                  FeaturePilot bridges the gap between automated and manual testing. 
                   Import feature files or reports, execute tests step-by-step, 
                   attach screenshots, and export full test results.
                 </p>

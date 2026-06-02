@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Button, ButtonGroup, Image, Badge } from 'react-bootstrap';
-import { FaCheckCircle, FaTimesCircle, FaForward, FaQuestionCircle } from 'react-icons/fa';
+import { FaCheckCircle, FaTimesCircle, FaForward, FaQuestionCircle, FaPaperclip, FaPencilAlt, FaFile, FaFileAlt, FaFileCode, FaFileCsv, FaFilePdf } from 'react-icons/fa';
 import DragDropZone from '../components/DragDropZone';
 import FeatureSidebar from '../components/FeatureSidebar';
 import db from '../db/indexedDb';
@@ -20,17 +20,24 @@ function SessionViewer() {
   const [stepMetadata, setStepMetadata] = useState({});
   const [scenarioImages, setScenarioImages] = useState({});
   const [dragOverStep, setDragOverStep] = useState(null);
+  const [featureComment, setFeatureComment] = useState('');
+  const [commentExpanded, setCommentExpanded] = useState(false);
+  const [attachmentTarget, setAttachmentTarget] = useState(null);
+  const [featureNameEditing, setFeatureNameEditing] = useState(false);
+  const [featureNameValue, setFeatureNameValue] = useState('');
+  const uploadZoneRef = useRef(null);
+  const fileInputRef = useRef(null);
 
-  // Helper function to get Bootstrap icon class for file types
+  // Helper function to get React icon component for file types
   const getFileIcon = (mimeType) => {
-    if (!mimeType) return 'bi-file-earmark';
-    if (mimeType.includes('json')) return 'bi-filetype-json';
-    if (mimeType.includes('xml')) return 'bi-filetype-xml';
-    if (mimeType.includes('csv')) return 'bi-filetype-csv';
-    if (mimeType.includes('yaml')) return 'bi-filetype-yml';
-    if (mimeType.includes('pdf')) return 'bi-filetype-pdf';
-    if (mimeType.includes('text')) return 'bi-file-earmark-text';
-    return 'bi-file-earmark';
+    if (!mimeType) return FaFile;
+    if (mimeType.includes('json')) return FaFileCode;
+    if (mimeType.includes('xml')) return FaFileCode;
+    if (mimeType.includes('csv')) return FaFileCsv;
+    if (mimeType.includes('yaml')) return FaFileCode;
+    if (mimeType.includes('pdf')) return FaFilePdf;
+    if (mimeType.includes('text')) return FaFileAlt;
+    return FaFile;
   };
 
   // Helper function to truncate long filenames
@@ -47,11 +54,24 @@ function SessionViewer() {
 
   useEffect(() => {
     const fetchData = async () => {
+      // Reset selected feature when session changes
+      setSelectedFeature(null);
+      setParsed(null);
+      setStepResults({});
+      setStepMetadata({});
+      setScenarioImages({});
+      setFeatureComment('');
+      setCommentExpanded(false);
+      setAttachmentTarget(null);
+      setFeatureNameEditing(false);
+      setFeatureNameValue('');
+      
       const loaded = await db.features
         .where('sessionId')
         .equals(Number(sessionId))
         .toArray();
       setFeatures(loaded);
+      
     };
 
     fetchData();
@@ -69,7 +89,8 @@ function SessionViewer() {
           const featureId = await db.features.add({
             sessionId: Number(sessionId),
             title: parsedFeature.title,
-            content: JSON.stringify(parsedFeature) // Store parsed data as content
+            content: JSON.stringify(parsedFeature), // Store parsed data as content
+            comment: parsedFeature.comment || '' // Import comment field if present
           });
 
           // Store steps with metadata
@@ -129,6 +150,10 @@ function SessionViewer() {
   const handleSelectFeature = async (feature) => {
     setSelectedFeature(feature);
     
+    // Load feature comment and expand if it exists
+    setFeatureComment(feature.comment || '');
+    setCommentExpanded(!!feature.comment);
+    
     // Check if content is JSON (from Cucumber report) or plain text (.feature file)
     let parsedFeature;
     try {
@@ -181,7 +206,23 @@ function SessionViewer() {
   const handleMarkStep = async (scenarioIndex, stepIndex, status) => {
     console.log('handleMarkStep called:', { scenarioIndex, stepIndex, status });
     const key = `${scenarioIndex}-${stepIndex}`;
+    const currentStatus = stepResults[key];
+
+    if (currentStatus === status) {
+      status = 'undo';
+    }
+
     const currentUser = auth.currentUser;
+
+    // Check if step already exists to preserve metadata
+    const existingStep = await db.steps
+      .where({
+        sessionId: Number(sessionId),
+        featureId: selectedFeature.id,
+        scenarioIndex,
+        stepIndex
+      })
+      .first();
 
     const stepData = {
       sessionId: Number(sessionId),
@@ -189,7 +230,12 @@ function SessionViewer() {
       scenarioIndex,
       stepIndex,
       status,
-      modifiedBy: currentUser?.displayName || currentUser?.email || 'Unknown'
+      modifiedBy: currentUser?.displayName || currentUser?.email || 'Unknown',
+      // Preserve existing metadata if present, or set defaults for manual testing
+      duration: existingStep?.duration ?? 0,
+      errorMessage: existingStep?.errorMessage ?? null,
+      // Only set matchLocation to 'manual' if step has been executed (not undefined)
+      matchLocation: existingStep?.matchLocation ?? (status !== 'undo' ? 'manual' : null)
     };
     
     console.log('Saving step to DB:', stepData);
@@ -215,15 +261,31 @@ function SessionViewer() {
     console.log(`Marking ${stepCount} steps in scenario ${scenarioIndex}`);
     const currentUser = auth.currentUser;
 
+    // Fetch existing steps to preserve metadata
+    const existingSteps = await db.steps
+      .where({
+        sessionId: Number(sessionId),
+        featureId: selectedFeature.id,
+        scenarioIndex
+      })
+      .toArray();
+
     const updates = [];
     for (let stepIndex = 0; stepIndex < stepCount; stepIndex++) {
+      const existingStep = existingSteps.find(s => s.stepIndex === stepIndex);
+      
       updates.push({
         sessionId: Number(sessionId),
         featureId: selectedFeature.id,
         scenarioIndex,
         stepIndex,
         status,
-        modifiedBy: currentUser?.displayName || currentUser?.email || 'Unknown'
+        modifiedBy: currentUser?.displayName || currentUser?.email || 'Unknown',
+        // Preserve existing metadata if present, or set defaults for manual testing
+        duration: existingStep?.duration ?? 0,
+        errorMessage: existingStep?.errorMessage ?? null,
+        // Only set matchLocation to 'manual' if step has been executed (not undefined)
+        matchLocation: existingStep?.matchLocation ?? (status !== 'undo' ? 'manual' : null)
       });
     }
 
@@ -259,9 +321,30 @@ function SessionViewer() {
     navigate('/');
   };
 
+  const handleDeleteFeature = async (featureId, featureTitle) => {
+    if (!window.confirm(`Are you sure you want to delete "${featureTitle}"?`)) return;
+
+    // Delete all related data
+    await db.steps.where({ sessionId: Number(sessionId), featureId }).delete();
+    await db.attachments.where({ sessionId: Number(sessionId), featureId }).delete();
+    await db.features.delete(featureId);
+
+    // Update local state
+    setFeatures(prev => prev.filter(f => f.id !== featureId));
+    
+    // If this was the selected feature, deselect it
+    if (selectedFeature?.id === featureId) {
+      setSelectedFeature(null);
+      setParsed(null);
+    }
+
+    await logActivity(`Deleted feature: ${featureTitle}`);
+  };
+
   const handleExportReport = async () => {
     try {
-      await downloadCucumberReport(Number(sessionId));
+      const user = auth.currentUser;
+      await downloadCucumberReport(Number(sessionId), user);
       await logActivity('Exported report as Cucumber report');
     } catch (error) {
       console.error('Export failed:', error);
@@ -290,6 +373,33 @@ function SessionViewer() {
     );
   };
 
+  const renderStep = (step) => {
+    // Handle both old format (string) and new format (object with text and docString)
+    const stepText = typeof step === 'string' ? step : step.text;
+    const docString = typeof step === 'object' ? step.docString : null;
+    
+    return (
+      <>
+        {highlightKeyword(stepText)}
+        {docString && (
+          <pre style={{
+            marginTop: '8px',
+            marginBottom: '0',
+            padding: '8px',
+            backgroundColor: '#f8f9fa',
+            border: '1px solid #dee2e6',
+            borderRadius: '4px',
+            fontSize: '0.85em',
+            whiteSpace: 'pre-wrap',
+            wordWrap: 'break-word'
+          }}>
+            {docString}
+          </pre>
+        )}
+      </>
+    );
+  };
+
   const logActivity = async (message) => {
     const user = auth.currentUser;
 
@@ -299,6 +409,80 @@ function SessionViewer() {
       user: user?.displayName || user?.email || 'Unknown',
       message
     });
+  };
+
+  const handleSaveComment = async (comment) => {
+    if (!selectedFeature) return;
+    
+    await db.features.update(selectedFeature.id, { comment });
+    setFeatureComment(comment);
+    
+    // Update the selectedFeature object
+    setSelectedFeature(prev => ({ ...prev, comment }));
+    
+    // Update the features array to keep it in sync
+    setFeatures(prev => prev.map(f => 
+      f.id === selectedFeature.id ? { ...f, comment } : f
+    ));
+    
+    await logActivity(`Updated feature comment`);
+  };
+
+  const handleStartEditFeatureName = () => {
+    // Use persisted title from selectedFeature to avoid stale data
+    setFeatureNameValue(selectedFeature?.title || parsed.title);
+    setFeatureNameEditing(true);
+  };
+
+  const handleSaveFeatureName = async () => {
+    if (!selectedFeature) return;
+
+    const trimmed = featureNameValue.trim();
+    if (!trimmed) {
+      setFeatureNameValue(selectedFeature.title || '');
+      setFeatureNameEditing(false);
+      return;
+    }
+
+    const newTitle = trimmed;
+    // Short-circuit if title hasn't changed
+    if (newTitle === selectedFeature.title) {
+      setFeatureNameEditing(false);
+      return;
+    }
+
+    // Update content: either JSON or .feature text
+    let newContent = selectedFeature.content;
+    try {
+      // Try JSON first (Cucumber report)
+      const jsonContent = JSON.parse(selectedFeature.content);
+      jsonContent.title = newTitle;
+      newContent = JSON.stringify(jsonContent, null, 2);
+    } catch {
+      // Otherwise, replace Feature: line in .feature text
+      newContent = selectedFeature.content.replace(
+        /^(\s*)Feature:\s*.*/m,
+        `$1Feature: ${newTitle}`
+      );
+    }
+
+    await db.features.update(selectedFeature.id, { title: newTitle, content: newContent });
+    setParsed(prev => ({ ...prev, title: newTitle }));
+    setSelectedFeature(prev => ({ ...prev, title: newTitle, content: newContent }));
+    setFeatures(prev => prev.map(f =>
+      f.id === selectedFeature.id ? { ...f, title: newTitle, content: newContent } : f
+    ));
+    setFeatureNameEditing(false);
+    await logActivity(`Updated feature name to "${newTitle}"`);
+  };
+
+  const handleBackToUpload = () => {
+    setSelectedFeature(null);
+    setParsed(null);
+    // Scroll to upload zone
+    setTimeout(() => {
+      uploadZoneRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 100);
   };
 
   const handleDeleteImage = async (imageId, scenarioIndex, stepIndex) => {
@@ -410,15 +594,106 @@ function SessionViewer() {
     await logActivity(`Added ${fileTypeText} to step ${scenarioIndex + 1}.${stepIndex + 1}`);
   };
 
+  const handleAttachmentClick = (scenarioIndex, stepIndex) => {
+    setAttachmentTarget({ scenarioIndex, stepIndex });
+    fileInputRef.current?.click();
+  };
+
+  const handleFileInputChange = async (e) => {
+    if (!attachmentTarget || !e.target.files?.length) {
+      setAttachmentTarget(null);
+      return;
+    }
+
+    const files = Array.from(e.target.files);
+    const validFiles = files.filter(file => {
+      return file.type.startsWith('image/') ||
+             file.type === 'text/plain' ||
+             file.type === 'application/json' ||
+             file.type === 'application/xml' ||
+             file.type === 'text/xml' ||
+             file.type === 'text/csv' ||
+             file.type === 'application/yaml' ||
+             file.type === 'text/yaml' ||
+             file.type === 'application/pdf' ||
+             file.name.match(/\.(txt|log|json|xml|csv|ya?ml|pdf)$/i);
+    });
+
+    if (validFiles.length === 0) {
+      setAttachmentTarget(null);
+      return;
+    }
+
+    const { scenarioIndex, stepIndex } = attachmentTarget;
+
+    const fileReads = validFiles.map(file =>
+      new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const base64Data = e.target.result.split(',')[1];
+          const fileType = file.type.startsWith('image/') ? 'image' : 'document';
+
+          resolve({
+            sessionId: Number(sessionId),
+            featureId: selectedFeature.id,
+            scenarioIndex,
+            stepIndex,
+            fileName: file.name,
+            fileType: fileType,
+            imageData: base64Data,
+            mimeType: file.type,
+            uploadedAt: new Date().toISOString()
+          });
+        };
+        reader.onerror = () => resolve(null);
+        reader.readAsDataURL(file);
+      })
+    );
+
+    const fileData = (await Promise.all(fileReads)).filter(Boolean);
+    if (fileData.length === 0) {
+      setAttachmentTarget(null);
+      e.target.value = '';
+      return;
+    }
+    await db.attachments.bulkAdd(fileData);
+
+    const images = await db.attachments
+      .where({ sessionId: Number(sessionId), featureId: selectedFeature.id })
+      .toArray();
+
+    const imagesByScenario = {};
+    images.forEach(img => {
+      const key = `${img.scenarioIndex}-${img.stepIndex}`;
+      if (!imagesByScenario[key]) {
+        imagesByScenario[key] = [];
+      }
+      imagesByScenario[key].push(img);
+    });
+
+    setScenarioImages(imagesByScenario);
+
+    const fileTypeText = validFiles.length === 1
+      ? (validFiles[0].type.startsWith('image/') ? 'image' : 'text file')
+      : `${validFiles.length} files`;
+    await logActivity(`Added ${fileTypeText} to step ${scenarioIndex + 1}.${stepIndex + 1}`);
+
+    setAttachmentTarget(null);
+    e.target.value = '';
+  };
+
   return (
     <div style={{ display: 'flex' }}>
       <style>{`
         .image-container .delete-image-btn {
           opacity: 0;
-          transition: opacity 0.2s;
+          transition: opacity 0.2s, color 0.2s;
         }
         .image-container:hover .delete-image-btn {
           opacity: 1 !important;
+        }
+        .delete-image-btn:hover {
+          color: #bd2130 !important;
         }
         .step-drag-over {
           background-color: #e3f2fd !important;
@@ -459,12 +734,19 @@ function SessionViewer() {
           features={features}
           selectedId={selectedFeature?.id}
           onSelect={handleSelectFeature}
+          onDelete={handleDeleteFeature}
         />
       </div>
 
       <div className="p-4 flex-grow-1" style={{ minWidth: 0 }}>
         <div className="d-flex justify-content-between align-items-center">
-          <h2>Session #{sessionId}</h2>
+          <h2 
+            onClick={handleBackToUpload}
+            style={{ cursor: 'pointer' }}
+            title="Click to add more features"
+          >
+            Session #{sessionId}
+          </h2>
           <div className="d-flex gap-2">
             <Button variant="primary" size="sm" onClick={handleExportReport}>
               Export Report
@@ -491,7 +773,32 @@ function SessionViewer() {
           <div className="mt-4">
             <div className="mb-2">
               <h4 className="mb-0 d-inline" style={{ lineHeight: 1.2 }}>
-                Feature: {parsed.title}
+                Feature: {featureNameEditing ? (
+                  <input
+                    type="text"
+                    className="form-control form-control-sm d-inline-block"
+                    style={{ width: '400px' }}
+                    value={featureNameValue}
+                    onChange={(e) => setFeatureNameValue(e.target.value)}
+                    onBlur={handleSaveFeatureName}
+                    onKeyDown={(e) => e.key === 'Enter' && handleSaveFeatureName()}
+                    autoFocus
+                  />
+                ) : (
+                  <>
+                    {parsed.title}
+                    <Button
+                      variant="link"
+                      size="sm"
+                      className="p-0 ms-2 text-decoration-none"
+                      onClick={handleStartEditFeatureName}
+                      title="Edit feature name"
+                      aria-label="Edit feature name"
+                    >
+                      <FaPencilAlt />
+                    </Button>
+                  </>
+                )}
                 {parsed.tags && parsed.tags.length > 0 && (
                   <span className="ms-2">
                     {parsed.tags.map((tag, i) => (
@@ -502,6 +809,36 @@ function SessionViewer() {
                   </span>
                 )}
               </h4>
+            </div>
+            
+            {/* Feature Comment Section */}
+            <div className="mb-3">
+              <Button
+                variant="link"
+                size="sm"
+                onClick={() => setCommentExpanded(!commentExpanded)}
+                className="p-0 text-decoration-none"
+                style={{ fontSize: '0.9rem' }}
+              >
+                {commentExpanded ? '▼' : '▶'} Notes/Comments
+              </Button>
+              {commentExpanded && (
+                <div className="mt-2">
+                  <textarea
+                    className="form-control"
+                    value={featureComment}
+                    onChange={(e) => setFeatureComment(e.target.value)}
+                    onBlur={(e) => handleSaveComment(e.target.value)}
+                    placeholder="Add notes or comments about this feature..."
+                    style={{ 
+                      resize: 'vertical',
+                      minHeight: '80px',
+                      fontFamily: 'inherit',
+                      fontSize: '0.95rem'
+                    }}
+                  />
+                </div>
+              )}
             </div>
             
             {/* Feature description */}
@@ -534,7 +871,7 @@ function SessionViewer() {
                         fontStyle: 'italic'
                       }}
                     >
-                      {highlightKeyword(step)}
+                      {renderStep(step)}
                     </div>
                   ))}
                 </div>
@@ -619,19 +956,36 @@ function SessionViewer() {
                       >
                         <div className="d-flex align-items-start justify-content-between">
                           <div className="flex-grow-1">
-                            {highlightKeyword(step)}{' '}
+                            {renderStep(step)}
                             
                             {/* Display metadata if available */}
-                            {metadata.duration && (
-                              <Badge bg="secondary" className="ms-2">
-                                {(metadata.duration / 1000000).toFixed(0)}ms
-                              </Badge>
-                            )}
-                            {metadata.matchLocation && (
-                              <small className="ms-2 text-muted">
-                                {metadata.matchLocation}
-                              </small>
-                            )}
+                            <div className="mt-2">
+                              {/* Show duration only for automated tests (non-manual) */}
+                              {metadata.duration !== undefined && metadata.duration !== null && metadata.matchLocation && metadata.matchLocation !== 'manual' && (
+                                <Badge bg="info" className="me-2" style={{ fontSize: '0.75rem', fontWeight: '300', padding: '0.25em 0.5em' }}>
+                                  {metadata.duration}ms
+                                </Badge>
+                              )}
+                              {/* Show match location with better styling - COMMENTED OUT */}
+                              {/* {metadata.matchLocation && (
+                                <Badge 
+                                  bg={metadata.matchLocation === 'manual' ? '' : 'dark'} 
+                                  className="me-2" 
+                                  style={{
+                                    fontSize: '0.75rem', 
+                                    fontWeight: '300', 
+                                    padding: '0.25em 0.5em',
+                                    ...(metadata.matchLocation === 'manual' && {
+                                      border: '1px solid #6c757d',
+                                      color: '#6c757d',
+                                      backgroundColor: 'transparent'
+                                    })
+                                  }}
+                                >
+                                  {metadata.matchLocation}
+                                </Badge>
+                              )} */}
+                            </div>
                           </div>
                           
                           <ButtonGroup size="sm" className="ms-2">
@@ -662,14 +1016,23 @@ function SessionViewer() {
                             >
                               <FaForward />
                             </Button>
-                            <Button 
-                              variant={status === 'undo' ? 'info' : 'secondary'} 
+                            <Button
+                              variant={status === 'undo' ? 'info' : 'secondary'}
                               className={status !== 'undo' ? 'btn-step-action btn-undo-hint' : ''}
                               style={status !== 'undo' ? { opacity: 0.6 } : {}}
                               onClick={() => handleMarkStep(sIdx, stepIdx, 'undo')}
                               title="Mark as Undefined"
                             >
                               <FaQuestionCircle />
+                            </Button>
+                            <Button
+                              variant="secondary"
+                              className="btn-step-action"
+                              onClick={() => handleAttachmentClick(sIdx, stepIdx)}
+                              title="Attach File"
+                              aria-label="Attach file to step"
+                            >
+                              <FaPaperclip />
                             </Button>
                           </ButtonGroup>
                         </div>
@@ -717,20 +1080,31 @@ function SessionViewer() {
                                       URL.revokeObjectURL(url);
                                     }}
                                   >
-                                    <i className={`bi ${getFileIcon(img.mimeType)}`} style={{ fontSize: '32px', color: '#6c757d', marginBottom: '8px' }}></i>
+                                    {React.createElement(getFileIcon(img.mimeType), { 
+                                      style: { fontSize: '32px', color: '#6c757d', marginBottom: '8px' } 
+                                    })}
                                     <small className="text-muted text-center" style={{ wordBreak: 'break-word', maxWidth: '100px', fontSize: '0.75rem' }} title={img.fileName}>
                                       {truncateFileName(img.fileName)}
                                     </small>
                                   </div>
                                 )}
-                                <Button
-                                  variant="danger"
-                                  size="sm"
+                                <button
                                   className="delete-image-btn"
                                   style={{ 
                                     position: 'absolute', 
                                     top: '5px', 
-                                    right: '5px'
+                                    right: '5px',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    width: '24px',
+                                    height: '24px',
+                                    padding: 0,
+                                    border: 'none',
+                                    background: 'none',
+                                    color: '#dc3545',
+                                    cursor: 'pointer',
+                                    fontSize: '1.2rem'
                                   }}
                                   onClick={(e) => {
                                     e.stopPropagation();
@@ -740,8 +1114,8 @@ function SessionViewer() {
                                     }
                                   }}
                                 >
-                                  ×
-                                </Button>
+                                  <FaTimesCircle />
+                                </button>
                               </div>
                             ))}
                           </div>
@@ -755,7 +1129,16 @@ function SessionViewer() {
           </div>
         )}
 
-        <div className="mt-4">
+        <input
+          type="file"
+          ref={fileInputRef}
+          style={{ display: 'none' }}
+          onChange={handleFileInputChange}
+          multiple
+          accept="image/*,.txt,.log,.json,.xml,.csv,.yml,.yaml,.pdf"
+        />
+
+        <div className="mt-4" ref={uploadZoneRef}>
           <DragDropZone onFiles={handleFileUpload} />
         </div>
       </div>

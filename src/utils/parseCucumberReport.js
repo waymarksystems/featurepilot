@@ -47,7 +47,8 @@ function parseFeature(featureData) {
     scenarios,
     uri: featureData.uri, // Preserve original feature file path
     description: featureData.description || '',
-    tags: featureTags
+    tags: featureTags,
+    comment: featureData.comment || '' // Import custom comment field if present
   };
 }
 
@@ -83,9 +84,19 @@ function parseScenario(scenarioData) {
         return;
       }
       
-      // Build step text (e.g., "Given I navigate to...")
-      const stepText = `${step.keyword} ${step.name}`;
-      steps.push(stepText);
+      // Build step object with text
+      const stepText = `${step.keyword}${step.name}`;
+      const stepObj = { text: stepText };
+      
+      // Extract docString from arguments array
+      if (step.arguments && Array.isArray(step.arguments) && step.arguments.length > 0) {
+        const docStringArg = step.arguments.find(arg => arg.content !== undefined);
+        if (docStringArg) {
+          stepObj.docString = docStringArg.content;
+        }
+      }
+      
+      steps.push(stepObj);
       
       // Extract metadata
       const metadata = {

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Button, Card, ListGroup } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
 import db from '../db/indexedDb';
+import { formatDateTime } from '../utils/formatDate';
 
 function Home() {
   const [sessions, setSessions] = useState([]);
@@ -17,24 +18,17 @@ function Home() {
 
   const handleStart = async () => {
     const now = new Date();
-    const formatted = now.toLocaleString(undefined, {
-      day: '2-digit',
-      month: 'short',
-      year: 'numeric',
-      hour: 'numeric',
-      minute: '2-digit',
-      hour12: true
-    });
+    const formattedDate = formatDateTime(now);
   
     // First add the session with placeholder title
     const id = await db.sessions.add({
-      name: `Session (pending ID) – ${formatted}`,
+      name: `Session (pending ID) - ${formattedDate}`,
       createdAt: now.getTime(),
     });
   
     // Now update it with the ID in the title
     await db.sessions.update(id, {
-      name: `Session #${id} – ${formatted}`
+      name: `Session #${id} - ${formattedDate}`
     });
   
     navigate(`/session/${id}`);
@@ -42,7 +36,7 @@ function Home() {
 
   return (
     <div>
-      <h1>Welcome to StepRunner</h1>
+      <h1>Welcome to FeaturePilot</h1>
 
       {sessions.length === 0 ? (
         <Card className="mt-4">

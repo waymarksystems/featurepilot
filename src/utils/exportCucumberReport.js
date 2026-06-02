@@ -1,5 +1,5 @@
 import db from '../db/indexedDb';
-import { generateCucumberHtml } from './exportCucumberHtml';
+import { exportCucumberHtml } from './exportCucumberHtml';
 import { exportAuditLog } from './exportAuditLog';
 import parseFeature from './parseFeature';
 import JSZip from 'jszip';
@@ -54,7 +54,11 @@ export async function exportCucumberReport(sessionId) {
       console.log('Scenario steps:', scenario.steps);
       
       // Build steps for this scenario
-      const scenarioSteps = scenario.steps.map((stepText, stepIndex) => {
+      const scenarioSteps = scenario.steps.map((step, stepIndex) => {
+        // Handle both old format (string) and new format (object)
+        const stepText = typeof step === 'string' ? step : step.text;
+        const docString = typeof step === 'object' ? step.docString : null;
+        
         const stepKey = steps.find(
           s => s.scenarioIndex === scenarioIndex && s.stepIndex === stepIndex
         );
@@ -68,6 +72,15 @@ export async function exportCucumberReport(sessionId) {
         const keyword = match ? `${match[1]} ` : '';
         const name = match ? match[2] : stepText;
 
+        // Build arguments array (for docStrings)
+        const args = [];
+        if (docString) {
+          args.push({
+            content: docString,
+            line: stepIndex + 1 // Placeholder line number
+          });
+        }
+
         // Get all attachments (images and document files) for this step
         const stepAttachments = images.filter(
           img => img.scenarioIndex === scenarioIndex && img.stepIndex === stepIndex
@@ -80,13 +93,23 @@ export async function exportCucumberReport(sessionId) {
           ...(attachment.fileName && { name: attachment.fileName })
         }));
 
+        // Determine match location based on step execution status
+        let matchLocation = 'unknown';
+        if (stepKey?.matchLocation) {
+          // Preserve existing match location from imported reports
+          matchLocation = stepKey.matchLocation;
+        } else if (stepKey?.status && stepKey.status !== 'undo') {
+          // Mark as 'manual' only if step has been executed (not undefined)
+          matchLocation = 'manual';
+        }
+
         return {
-          arguments: [],
+          arguments: args,
           keyword,
           line: stepIndex + 1, // Placeholder line number
           name,
           match: {
-            location: stepKey?.matchLocation || 'unknown'
+            location: matchLocation
           },
           result: {
             status: mapStatusToCucumber(stepKey?.status || 'unknown'),
@@ -117,7 +140,9 @@ export async function exportCucumberReport(sessionId) {
       id: feature.title.toLowerCase().replace(/\s+/g, '-'),
       tags: [],
       uri: parsedFeature.uri || `features/${feature.title}.feature`,
-      elements
+      elements,
+      // Custom field for feature comment (non-standard but allowed)
+      ...(feature.comment && { comment: feature.comment })
     });
   }
 
@@ -146,20 +171,24 @@ function mapStatusToCucumber(status) {
  * Download the Cucumber report as a ZIP file containing JSON, HTML, and audit log
  * All attachments are embedded in the JSON (in the embeddings array)
  */
-export async function downloadCucumberReport(sessionId) {
+export async function downloadCucumberReport(sessionId, user = null) {
   const report = await exportCucumberReport(sessionId);
   const json = JSON.stringify(report, null, 2);
   
+  // Get session name
+  const session = await db.sessions.get(sessionId);
+  const sessionName = session?.name || 'Unknown Session';
+  
   // Generate HTML report
-  const html = await generateCucumberHtml(report);
+  const html = await exportCucumberHtml(report, user, sessionName);
   
   // Export audit log as text
   const auditLog = await exportAuditLog(sessionId);
   
   // Create ZIP file
   const zip = new JSZip();
-  zip.file(`cucumber-report-${sessionId}.json`, json);
-  zip.file(`cucumber-report-${sessionId}.html`, html);
+  zip.file(`featurepilot-report-${sessionId}.json`, json);
+  zip.file(`featurepilot-report-${sessionId}.html`, html);
   zip.file(`audit-log-${sessionId}.txt`, auditLog);
   
   // Generate ZIP blob
@@ -169,7 +198,7 @@ export async function downloadCucumberReport(sessionId) {
   const zipUrl = URL.createObjectURL(zipBlob);
   const link = document.createElement('a');
   link.href = zipUrl;
-  link.download = `cucumber-report-${sessionId}.zip`;
+  link.download = `featurepilot-report-${sessionId}.zip`;
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
