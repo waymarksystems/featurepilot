@@ -254,6 +254,19 @@ export async function generateCucumberHtml(cucumberJson) {
       white-space: pre-wrap;
     }
     
+    .step-docstring {
+      margin-top: 10px;
+      padding: 10px;
+      background: #f8f9fa;
+      border: 1px solid #dee2e6;
+      border-radius: 4px;
+      font-family: 'Courier New', monospace;
+      font-size: 0.85em;
+      color: #495057;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+    
     .step-attachments {
       margin-top: 10px;
       display: flex;
@@ -490,6 +503,15 @@ export async function generateCucumberHtml(cucumberJson) {
             const errorHtml = step.result?.error_message ? 
               \`<div class="step-error">\${step.result.error_message}</div>\` : '';
             
+            // Render docString if present in arguments
+            let docStringHtml = '';
+            if (step.arguments && step.arguments.length > 0) {
+              const docStringArg = step.arguments.find(arg => arg.content !== undefined);
+              if (docStringArg) {
+                docStringHtml = \`<pre class="step-docstring">\${docStringArg.content}</pre>\`;
+              }
+            }
+            
             // Handle embeddings (images and documents)
             let attachmentsHtml = '';
             
@@ -540,6 +562,7 @@ export async function generateCucumberHtml(cucumberJson) {
                     <span>\${step.name}</span>
                     \${duration ? \`<span class="step-duration">\${duration}</span>\` : ''}
                   </div>
+                  \${docStringHtml}
                   \${errorHtml}
                   \${attachmentsHtml}
                 </div>

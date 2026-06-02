@@ -214,13 +214,28 @@ function SessionViewer() {
 
     const currentUser = auth.currentUser;
 
+    // Check if step already exists to preserve metadata
+    const existingStep = await db.steps
+      .where({
+        sessionId: Number(sessionId),
+        featureId: selectedFeature.id,
+        scenarioIndex,
+        stepIndex
+      })
+      .first();
+
     const stepData = {
       sessionId: Number(sessionId),
       featureId: selectedFeature.id,
       scenarioIndex,
       stepIndex,
       status,
-      modifiedBy: currentUser?.displayName || currentUser?.email || 'Unknown'
+      modifiedBy: currentUser?.displayName || currentUser?.email || 'Unknown',
+      // Preserve existing metadata if present, or set defaults for manual testing
+      duration: existingStep?.duration ?? 0,
+      errorMessage: existingStep?.errorMessage ?? null,
+      // Only set matchLocation to 'manual' if step has been executed (not undefined)
+      matchLocation: existingStep?.matchLocation ?? (status !== 'undo' ? 'manual' : null)
     };
     
     console.log('Saving step to DB:', stepData);
@@ -246,15 +261,31 @@ function SessionViewer() {
     console.log(`Marking ${stepCount} steps in scenario ${scenarioIndex}`);
     const currentUser = auth.currentUser;
 
+    // Fetch existing steps to preserve metadata
+    const existingSteps = await db.steps
+      .where({
+        sessionId: Number(sessionId),
+        featureId: selectedFeature.id,
+        scenarioIndex
+      })
+      .toArray();
+
     const updates = [];
     for (let stepIndex = 0; stepIndex < stepCount; stepIndex++) {
+      const existingStep = existingSteps.find(s => s.stepIndex === stepIndex);
+      
       updates.push({
         sessionId: Number(sessionId),
         featureId: selectedFeature.id,
         scenarioIndex,
         stepIndex,
         status,
-        modifiedBy: currentUser?.displayName || currentUser?.email || 'Unknown'
+        modifiedBy: currentUser?.displayName || currentUser?.email || 'Unknown',
+        // Preserve existing metadata if present, or set defaults for manual testing
+        duration: existingStep?.duration ?? 0,
+        errorMessage: existingStep?.errorMessage ?? null,
+        // Only set matchLocation to 'manual' if step has been executed (not undefined)
+        matchLocation: existingStep?.matchLocation ?? (status !== 'undo' ? 'manual' : null)
       });
     }
 
@@ -338,6 +369,33 @@ function SessionViewer() {
         <span style={{ color: '#0056b3', fontWeight: 'bold' }}>{firstWord}</span>{' '}
         {words.join(' ')}
       </span>
+    );
+  };
+
+  const renderStep = (step) => {
+    // Handle both old format (string) and new format (object with text and docString)
+    const stepText = typeof step === 'string' ? step : step.text;
+    const docString = typeof step === 'object' ? step.docString : null;
+    
+    return (
+      <>
+        {highlightKeyword(stepText)}
+        {docString && (
+          <pre style={{
+            marginTop: '8px',
+            marginBottom: '0',
+            padding: '8px',
+            backgroundColor: '#f8f9fa',
+            border: '1px solid #dee2e6',
+            borderRadius: '4px',
+            fontSize: '0.85em',
+            whiteSpace: 'pre-wrap',
+            wordWrap: 'break-word'
+          }}>
+            {docString}
+          </pre>
+        )}
+      </>
     );
   };
 
@@ -812,7 +870,7 @@ function SessionViewer() {
                         fontStyle: 'italic'
                       }}
                     >
-                      {highlightKeyword(step)}
+                      {renderStep(step)}
                     </div>
                   ))}
                 </div>
@@ -897,19 +955,36 @@ function SessionViewer() {
                       >
                         <div className="d-flex align-items-start justify-content-between">
                           <div className="flex-grow-1">
-                            {highlightKeyword(step)}{' '}
+                            {renderStep(step)}
                             
                             {/* Display metadata if available */}
-                            {metadata.duration && (
-                              <Badge bg="secondary" className="ms-2">
-                                {(metadata.duration / 1000000).toFixed(0)}ms
-                              </Badge>
-                            )}
-                            {metadata.matchLocation && (
-                              <small className="ms-2 text-muted">
-                                {metadata.matchLocation}
-                              </small>
-                            )}
+                            <div className="mt-2">
+                              {/* Show duration only for automated tests (non-manual) */}
+                              {metadata.duration !== undefined && metadata.duration !== null && metadata.matchLocation && metadata.matchLocation !== 'manual' && (
+                                <Badge bg="info" className="me-2" style={{ fontSize: '0.75rem', fontWeight: '300', padding: '0.25em 0.5em' }}>
+                                  {metadata.duration}ms
+                                </Badge>
+                              )}
+                              {/* Show match location with better styling - COMMENTED OUT */}
+                              {/* {metadata.matchLocation && (
+                                <Badge 
+                                  bg={metadata.matchLocation === 'manual' ? '' : 'dark'} 
+                                  className="me-2" 
+                                  style={{
+                                    fontSize: '0.75rem', 
+                                    fontWeight: '300', 
+                                    padding: '0.25em 0.5em',
+                                    ...(metadata.matchLocation === 'manual' && {
+                                      border: '1px solid #6c757d',
+                                      color: '#6c757d',
+                                      backgroundColor: 'transparent'
+                                    })
+                                  }}
+                                >
+                                  {metadata.matchLocation}
+                                </Badge>
+                              )} */}
+                            </div>
                           </div>
                           
                           <ButtonGroup size="sm" className="ms-2">
