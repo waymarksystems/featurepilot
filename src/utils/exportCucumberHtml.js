@@ -5,7 +5,7 @@ import { formatDateTime } from './formatDate';
  * This creates a simple, self-contained HTML file with embedded JSON data
  */
 
-export async function generateCucumberHtml(cucumberJson, user = null, sessionName = '') {
+export async function exportCucumberHtml(cucumberJson, user = null, sessionName = '') {
   const userName = user?.displayName || user?.email || 'Unknown User';
   const generatedDate = formatDateTime();
   const jsonString = JSON.stringify(cucumberJson, null, 2);
@@ -614,7 +614,7 @@ export async function generateCucumberHtml(cucumberJson, user = null, sessionNam
 }
 
 export async function downloadCucumberHtmlReport(sessionId, cucumberJson) {
-  const html = await generateCucumberHtml(cucumberJson);
+  const html = await exportCucumberHtml(cucumberJson);
   
   const htmlDataUrl = 'data:text/html;charset=utf-8,' + encodeURIComponent(html);
   const a = document.createElement('a');
