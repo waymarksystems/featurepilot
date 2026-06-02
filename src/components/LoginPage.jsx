@@ -1,12 +1,12 @@
 import React, { useEffect } from 'react';
 import { Container, Row, Col, Card, Button, Alert, Image } from 'react-bootstrap';
-import { FaGithub, FaGoogle } from 'react-icons/fa';
+import { FaGithub, FaGoogle, FaMicrosoft } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import useAuth from '../hooks/useAuth';
 import '../styles/LoginPage.css';
 
 const LoginPage = () => {
-  const { user, loginWithGoogle, loginWithGitHub, authError } = useAuth();
+  const { user, loginWithGoogle, loginWithGitHub, loginWithMicrosoft, authError } = useAuth();
   const navigate = useNavigate();
 
   
@@ -47,6 +47,9 @@ const LoginPage = () => {
                   </Button>
                   <Button variant="dark" onClick={loginWithGitHub}>
                     <FaGithub className="me-2" /> Login with GitHub
+                  </Button>
+                  <Button variant="primary" onClick={loginWithMicrosoft}>
+                    <FaMicrosoft className="me-2" /> Login with Microsoft
                   </Button>
                 </div>
               </Card.Body>

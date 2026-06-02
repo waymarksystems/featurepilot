@@ -3,6 +3,7 @@ import {
   auth,
   GoogleAuthProvider,
   GithubAuthProvider,
+  OAuthProvider,
   signInWithPopup,
   signOut,
   onAuthStateChanged
@@ -20,6 +21,10 @@ const Login = () => {
 
   const loginWithGoogle = () => signInWithPopup(auth, new GoogleAuthProvider());
   const loginWithGitHub = () => signInWithPopup(auth, new GithubAuthProvider());
+  const loginWithMicrosoft = () => {
+    const provider = new OAuthProvider('microsoft.com');
+    return signInWithPopup(auth, provider);
+  };
   const logout = () => signOut(auth);
 
   return (
@@ -34,6 +39,7 @@ const Login = () => {
         <div>
           <button onClick={loginWithGoogle}>Login with Google</button>
           <button onClick={loginWithGitHub}>Login with GitHub</button>
+          <button onClick={loginWithMicrosoft}>Login with Microsoft</button>
         </div>
       )}
     </div>

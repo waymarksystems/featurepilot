@@ -6,6 +6,7 @@ import {
   signInWithPopup,
   GoogleAuthProvider,
   GithubAuthProvider,
+  OAuthProvider,
   signOut
 } from '../firebase';
 
@@ -40,6 +41,16 @@ export default function useAuth() {
     }
   };
 
+  const loginWithMicrosoft = async () => {
+    setAuthError(null);
+    try {
+      const provider = new OAuthProvider('microsoft.com');
+      await signInWithPopup(auth, provider);
+    } catch (error) {
+      setAuthError(error);
+    }
+  };
+
   const logout = () => signOut(auth);
 
   return {
@@ -48,6 +59,7 @@ export default function useAuth() {
     authError,
     loginWithGoogle,
     loginWithGitHub,
+    loginWithMicrosoft,
     logout
   };
 }

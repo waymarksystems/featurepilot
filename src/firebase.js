@@ -3,6 +3,7 @@ import {
   getAuth,
   GoogleAuthProvider,
   GithubAuthProvider,
+  OAuthProvider,
   signInWithPopup,
   signOut,
   onAuthStateChanged
@@ -25,6 +26,7 @@ export {
   auth,
   GoogleAuthProvider,
   GithubAuthProvider,
+  OAuthProvider,
   signInWithPopup,
   signOut,
   onAuthStateChanged
