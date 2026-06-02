@@ -8,6 +8,7 @@ import db from '../db/indexedDb';
 import parseFeature from '../utils/parseFeature';
 import parseCucumberReport from '../utils/parseCucumberReport';
 import { downloadCucumberReport } from '../utils/exportCucumberReport';
+import { formatDuration } from '../utils/formatDuration';
 import { auth } from '../firebase';
 
 function SessionViewer() {
@@ -963,7 +964,7 @@ function SessionViewer() {
                               {/* Show duration only for automated tests (non-manual) */}
                               {metadata.duration !== undefined && metadata.duration !== null && metadata.matchLocation && metadata.matchLocation !== 'manual' && (
                                 <Badge bg="info" className="me-2" style={{ fontSize: '0.75rem', fontWeight: '300', padding: '0.25em 0.5em' }}>
-                                  {metadata.duration}ms
+                                  {formatDuration(metadata.duration)}ms
                                 </Badge>
                               )}
                               {/* Show match location with better styling - COMMENTED OUT */}
