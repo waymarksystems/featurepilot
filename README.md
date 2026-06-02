@@ -1,4 +1,4 @@
-# ✈️ FeaturePilot
+<img src="public/logo/featurepilot-combined.png" alt="FeaturePilot" width="300px" />
 
 [![Build](https://github.com/waymarksystems/featurepilot/actions/workflows/node.js.yml/badge.svg)](https://github.com/waymarksystems/featurepilot/actions/workflows/node.js.yml)
 [![Deploy](https://github.com/waymarksystems/featurepilot/actions/workflows/firebase-hosting-merge.yml/badge.svg)](https://github.com/waymarksystems/featurepilot/actions/workflows/firebase-hosting-merge.yml)
@@ -6,7 +6,7 @@
 
 **FeaturePilot bridges the gap between automated and manual testing by seamlessly blending both approaches.** 
 
-Perfect for QA engineers, testers, and developers who need to execute BDD scenarios step-by-step, import existing Cucumber automation results, attach visual evidence, and generate unified reports that combine automated test results with manual verification and enhancement.
+Perfect for QA engineers, testers, and developers who need to execute BDD scenarios step-by-step, import existing Cucumber automation results, attach visual evidence or logs, and generate unified reports that combine automated test results with manual verification and enhancement.
 
 ## ✨ Key Features
 
@@ -57,7 +57,7 @@ npm install
 # Start development server
 npm start
 
-# Open http://localhost:3000 in your browser
+# Open http://localhost:5173 in your browser
 ```
 
 ## 🤝 Contributing
