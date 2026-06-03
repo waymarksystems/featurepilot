@@ -4,13 +4,42 @@ We love contributions! Whether you're fixing bugs, adding features, improving do
 
 ## 🚀 Quick Start for Contributors
 
+### Installation & Development
+
+```bash
+# Clone the repository
+git clone https://github.com/waymarksystems/featurepilot.git
+cd featurepilot
+
+# Install dependencies
+npm install
+
+# Start development server
+npm start
+
+# Open http://localhost:5173 in your browser
+```
+
+### Contributing Workflow
+
 1. **Fork** the repository on GitHub
 2. **Clone** your fork locally
-3. **Install** dependencies: `npm install`
-4. **Start** development server: `npm start`
-5. **Make** your changes
-6. **Test** thoroughly
-7. **Submit** a pull request
+3. **Make** your changes
+4. **Test** thoroughly
+5. **Submit** a pull request
+
+## 📜 Contributor License Agreement
+
+By submitting a pull request or contribution to this project, you agree that:
+
+1. **Your contributions will be licensed under the Business Source License 1.1 (BUSL-1.1)**, the same license as the project
+2. **Waymark Systems Pty Ltd retains the right to relicense your contributions** under different terms, including proprietary licenses for commercial customers
+3. **You have the right to submit the contribution** and it does not violate any third-party rights
+4. **You will be credited** for your contributions in accordance with project conventions
+
+This agreement allows the project to remain freely available for personal and non-commercial use while supporting ongoing development. Your contributions help make FeaturePilot better for everyone, and we deeply appreciate your support.
+
+For questions about licensing or commercial use, contact info@waymarksystems.au
 
 ## 🐛 Reporting Bugs
 
@@ -26,39 +55,5 @@ We welcome feature suggestions! Please:
 - Describe your use case clearly
 - Explain how it would benefit other users
 - Consider contributing the implementation
-
-## 🔧 Development Guidelines
-
-### Code Style
-- Follow existing conventions and patterns
-- Use meaningful variable and function names
-- Add comments for complex logic
-- Keep components focused and reusable
-
-### Testing
-- Test your changes thoroughly in multiple browsers
-- Verify Cucumber/Gherkin file parsing works correctly
-- Test drag-and-drop functionality
-- Check responsive design on different screen sizes
-
-### Commit Messages
-- Use clear, descriptive commit messages
-- Start with a verb (Add, Fix, Update, Remove)
-- Reference issue numbers when applicable
-
-## 🎯 Areas We Need Help With
-
-- **Mobile UX**: Improving mobile experience
-- **Documentation**: Adding examples and tutorials
-- **Testing**: Adding automated tests
-- **Internationalization**: Supporting multiple languages
-
-## 📝 Documentation
-
-When contributing documentation:
-- Use clear, concise language
-- Include examples where helpful
-- Update relevant sections consistently
-- Consider adding screenshots for UI changes
 
 Thank you for contributing to FeaturePilot! 🎉

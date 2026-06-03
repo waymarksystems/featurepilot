@@ -1,8 +1,8 @@
 <img src="public/logo/featurepilot-combined.png" alt="FeaturePilot" width="300px" />
 
 [![Build](https://github.com/waymarksystems/featurepilot/actions/workflows/node.js.yml/badge.svg)](https://github.com/waymarksystems/featurepilot/actions/workflows/node.js.yml)
-[![Deploy](https://github.com/waymarksystems/featurepilot/actions/workflows/firebase-hosting-merge.yml/badge.svg)](https://github.com/waymarksystems/featurepilot/actions/workflows/firebase-hosting-merge.yml)
-[![License](https://img.shields.io/badge/License-BUSL--1.1-orange.svg)](LICENSE)
+[![Deployed on Cloudflare](https://img.shields.io/badge/Deployed%20on-Cloudflare-F38020?logo=cloudflare&logoColor=white)](https://demo.featurepilot.app)
+[![License](https://img.shields.io/badge/License-BUSL--1.1-red.svg)](LICENSE)
 
 **FeaturePilot bridges the gap between automated and manual testing by seamlessly blending both approaches.** 
 
@@ -26,43 +26,15 @@ Perfect for QA engineers, testers, and developers who need to execute BDD scenar
 
 *FeaturePilot interface showing step-by-step execution of a Cucumber feature file with visual feedback*
 
-🌐 **Live Demo:** https://steprunner-abc1f.web.app/
-
+🌐 **Live Demo:** https://demo.featurepilot.app
 
 ## 🧠 How It Works
 
 1. **Upload**: Start a new session and upload `.feature` files or a `cucumber-report.json`
 2. **Browse**: Navigate through features, scenarios, and steps via the intuitive UI
 3. **Execute**: Mark steps as passed/failed/skipped as you execute tests manually
-4. **Document**: Drag and drop screenshots onto steps for visual evidence
+4. **Document**: Drag and drop screenshots or log files onto steps for attaching evidence
 5. **Export**: Generate comprehensive JSON and HTML reports for sharing
-
-## 🚀 Getting Started
-
-### Prerequisites
-
-- Node.js (>= 18)
-- npm
-
-### Installation & Development
-
-```bash
-# Clone the repository
-git clone https://github.com/waymarksystems/featurepilot.git
-cd featurepilot
-
-# Install dependencies
-npm install
-
-# Start development server
-npm start
-
-# Open http://localhost:5173 in your browser
-```
-
-## 🤝 Contributing
-
-See [CONTRIBUTING.md](CONTRIBUTING.md)
 
 ## 📄 License
 
@@ -87,6 +59,10 @@ A commercial license is required for:
 **Commercial licensing:** See [COMMERCIAL.md](COMMERCIAL.md) or contact info@waymarksystems.au
 
 See [LICENSE](LICENSE) for full details.
+
+## 🤝 Contributing
+
+Want to contribute? Check out [CONTRIBUTING.md](CONTRIBUTING.md) for details.
 
 **Made with ❤️ for the testing community**
  
