@@ -23,12 +23,12 @@ function Header({ user, onLogout }) {
     <Navbar bg="dark" variant="dark" expand="lg">
       <Container fluid>
         <Navbar.Brand as={Link} to="/" className="d-flex align-items-center gap-2">
-          FeaturePilot
           <Image 
             src="/logo/featurepilot-plane-transparent-inverted.png" 
             alt="plane" 
             style={{ height: '24px' }}
           />
+          FeaturePilot
         </Navbar.Brand>
         <Nav style={{ position: 'relative' }}>
           {user && (

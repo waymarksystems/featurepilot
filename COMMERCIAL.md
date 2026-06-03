@@ -48,66 +48,43 @@ A **commercial license is required** if you use FeaturePilot:
 
 ---
 
-## 📋 License Types & Pricing
+## 💵 Pricing
 
-### Individual/Team License
-**Ideal for small teams and organizations**
+FeaturePilot offers flexible pricing plans designed to fit teams of all sizes.
 
-- ✅ Up to 10 users within your organization
-- ✅ Unlimited environments (dev, test, production)
-- ✅ 1 year of updates and support
+### Available Plans
 
-**Price:** Contact for pricing
+- **Starter** - Perfect for small teams and startups
+- **Professional** - For growing teams with advanced needs
+- **Enterprise** - Custom solutions for large organizations
 
----
+### What's Included
 
-### Enterprise License
-**For larger organizations**
+All commercial licenses include:
+- ✅ **Unlimited Users** - License your entire organization
+- ✅ **All Environments** - Use in dev, test, staging, and production
+- ✅ **Commercial Use Rights** - Deploy for internal or customer-facing workflows
+- ✅ **Priority Support** - Direct access to our team
+- ✅ **Updates & Bug Fixes** - Stay current with the latest features
 
-- ✅ Unlimited users within your organization
-- ✅ Unlimited environments and deployments
-- ✅ Priority support
-- ✅ Custom integrations assistance
-- ✅ Dedicated Slack channel
-- ✅ Perpetual updates
+### Special Pricing
 
-**Price:** Contact for pricing
+We offer discounts for:
+- 🎓 **Educational Institutions** - Academic pricing available
+- 🌱 **Early-Stage Startups** - Under 2 years old, < $1M revenue
+- 💙 **Non-Profit Organizations** - Mission-driven organizations
+- 🏅 **Open Source Projects** - Contributing to the community
 
----
+### Get Detailed Pricing
 
-### OEM/White Label License
-**For embedding FeaturePilot in your product**
+For current pricing, plan comparisons, and to purchase a license, visit:
 
-- ✅ Rebrand and customize
-- ✅ Distribute to your customers
-- ✅ Commercial redistribution rights
-- ✅ Technical integration support
+**🌐 [https://featurepilot.app/pricing](https://featurepilot.app/pricing)**
 
-**Price:** Contact for custom pricing
-
----
-
-## 🤝 How to Purchase
-
-### 1. Contact Us
-Email: **info@waymarksystems.au**  
-Subject: **FeaturePilot Commercial License Inquiry**
-
-### 2. Tell Us About Your Use Case
-- Organization name and size
-- Intended use (in-house testing, providing as a service etc.)
-- Number of users or deployments
-- Any specific requirements
-
-### 3. Receive Your Quote
-We'll provide a customized quote based on your needs.
-
-### 4. License Activation
-After purchase, you'll receive:
-- 📄 Commercial license agreement
-- 🔑 License key
-- 📚 Support documentation
-- 👥 Access to priority support channels
+Or contact us at **info@waymarksystems.au** for:
+- Custom enterprise agreements
+- Volume discounts
+- Special pricing inquiries
 
 ---
 
@@ -144,13 +121,7 @@ After purchase, you'll receive:
 **A:** Absolutely! We welcome contributions from the community. Contributing does not require a commercial license, and contributors are credited in the project.
 
 ### Q: Do you offer discounts?
-**A:** We offer discounts for:
-- 🎓 Educational institutions
-- 🌱 Startups (under 2 years old, < $1M revenue)
-- 💙 Non-profit organizations
-- 🏅 Open source projects
-
-Contact us to discuss your situation.
+**A:** Yes! We offer special pricing for educational institutions, early-stage startups, non-profit organizations, and open source projects. See the [Pricing section](#-pricing) above or visit [featurepilot.app/pricing](https://featurepilot.app/pricing) for details.
 
 ---
 
