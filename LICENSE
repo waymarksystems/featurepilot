@@ -6,9 +6,6 @@ License: Business Source License 1.1 (BUSL-1.1)
 Licensor: Waymark Systems Pty Ltd
 Licensed Work: FeaturePilot (this repository)
 The Licensed Work is (c) 2025-2026 Waymark Systems Pty Ltd
-Created by: Steve Swinsburg
-Change Date: 2075-01-01
-Change License: MIT License
 
 -----------------------------------------------------------------------------
 Business Source License 1.1
@@ -17,7 +14,8 @@ Terms
 
 The Licensor grants you a non-exclusive right to use, copy, and modify the
 Licensed Work for personal non-commercial purposes only, subject to the
-following conditions:
+following conditions. On or after January 1, 2030 (the Change Date), the
+Licensed Work will be available under the MIT License (the Change License).
 
 1. Commercial and Government Use Prohibition
 You may not use the Licensed Work for any commercial purpose or within any
